@@ -1,0 +1,218 @@
+<html>
+<head>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<title>LibraOffice - The Free Office Tool</title>
+		<meta charset="utf-8" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script>
+	// create object
+	var starRating = ( function() {
+		/**
+		 * Constructor function
+		 *
+		 * @param Object args
+		 *
+		 * @return Object
+		 */
+		var starRating = function( args ) {
+			// give us our self
+			var self = this;
+			// set global vars for our object
+			self.container = jQuery( '#' + args.containerId );
+			self.containerId = args.containerId;
+			self.starClass = 'sr-star' + args.containerId;
+			self.starWidth = args.starWidth;
+			self.starHeight = args.starHeight;
+			self.containerWidth = args.starWidth * 5;
+			self.ratingPercent = args.ratingPercent;
+			self.newRating = 0;
+			self.canRate = args.canRate;
+			// draw the 5 star rating system out to the dom
+			self.draw();
+			if ( self.canRate ) { // do other things if user can rate
+				if ( typeof args.onRate !== 'undefined' ) { // bind custom function
+					self.onRate = args.onRate;
+					}
+				jQuery( '.' + self.starClass ).on( 'mouseover', function() { // mouseover a star
+					// determine the percent width on mouseover of any star
+					var percentWidth = 20 * jQuery( this ).data( 'stars' );
+					// set the percent width  of the star bar to the new mouseover width
+					$( '.sr-star-bar' + self.containerId ).css( 'width', percentWidth + '%' );
+				});
+				jQuery( '.' + self.starClass ).on( 'mouseout', function() { // mouseout of a star
+					// return the star rating system percent to its previous percent on mouse out of any star
+					jQuery( '.sr-star-bar' + self.containerId ).css( 'width', self.ratingPercent );
+				});
+				jQuery( '.' + self.starClass ).on( 'click', function() { // click on a star
+					// ner rating set to the number of stars the user clicked on
+					self.newRating = jQuery( this ).data( 'stars' );
+					// determine the percent width based on the stars clicked on
+					var percentWidth = 20 * jQuery( this ).data( 'stars' );
+					// new rating percent is the number of stars clicked on
+					self.ratingPercent = percentWidth + '%';
+					// set new star bar percent width
+					$( '.sr-star-bar' + self.containerId ).css( 'width', percentWidth + '%' );
+					// run the on rate function passed in when the object was created
+					self.onRate();
+				} );
+			}
+		};
+		/**
+		 * Draw html out to the page
+		 *
+		 * @param void
+		 *
+		 * @return void
+		 */
+		starRating.prototype.draw = function() {
+			var self = this;
+			var pointerStyle = ( self.canRate ? 'cursor:pointer' : '' );
+			var starImg = '<img src="image6.png" style="width:' + self.starWidth + 'px" />';
+			var html = '<div style="width:' + self.containerWidth + 'px;height:' + self.starHeight + 'px;position:relative;' + pointerStyle + '">';
+			// create the progress bar that sits behinde the png star outlines
+			html += '<div class="sr-star-bar' + self.containerId + '" style="width:' + self.ratingPercent + ';background:#FFD700;height:100%;position:absolute"></div>';
+			for ( var i = 0; i < 5; i++ ) { // add each star to the page
+				var currStarStyle = 'position:absolute;margin-left:' + self.starWidth * i + 'px';
+				html += '<div class="' + self.starClass + '" data-stars="' + ( i + 1 ) + '" style="' + currStarStyle + '">' +
+					starImg +
+				'</div>';
+			}
+			html += '</div>';
+			// write out to the dom
+			self.container.html( html );
+		};
+		// return it all!
+		return starRating;
+	} )();
+	$( function() {
+		var rating = new starRating( { // create first star rating system on page load
+			containerId: 'star_rating', // element id in the dom for this star rating system to use
+			starWidth: 25, // width of stars
+			starHeight: 25, // height of stars
+			ratingPercent: '50%', // percentage star system should start
+			canRate: true, // can the user rate this star system?
+			onRate: function() { // this function runs when a star is clicked on
+				console.log( rating );
+				alert('You rate LibraOffice ' + rating.newRating + ' stars' );
+			}
+		} );
+	} );
+</script>
+</head>
+
+<body>
+	<!-- The navigation menu wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww -->
+	<div class="navbar">
+		<a href="index.html">LibraOffice</a>
+		<div class="subnav">
+			<button class="subnavbtn">About <i class="fa fa-caret-down"></i></button>
+			<div class="subnav-content">
+				<a href="Content.html">Content</a>
+				<a href="Compatibility.html">Compatibility</a>
+				<a href="GetInvolved.html">Get Involved</a>
+			</div>
+		</div>
+		<div class="subnav">
+			<button class="subnavbtn">Download <i class="fa fa-caret-down"></i></button>
+			<div class="subnav-content">
+				<a href="#bring" onclick="myFunction()">Windows</a>
+				<a href="#deliver" onclick="myFunction()">MacOS</a>
+				<a href="#package" onclick="myFunction()">Linux</a>
+			</div>
+		</div>
+
+		<script>
+	function myFunction() {
+	alert("Thank you for downloading LibraOffice");
+	}
+	</script>
+
+		<div class="subnav">
+			<button class="subnavbtn">LibraOffice Tools <i class="fa fa-caret-down"></i></button>
+			<div class="subnav-content">
+				<a href="LibraWritr.html">Libra Writr</a>
+				<a href="LibraCalc.html">Libra Calc</a>
+				<a href="LibraImprss.html">Libra Imprss</a>
+				<a href="LibraDraw.html">Libra Draw</a>
+			</div>
+		</div>
+		<a href="Help.html">Need Help?</a>
+	</div>
+	<!-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww -->
+
+
+  <div id="page">
+
+      <div id="top">
+        <h2><br><br></h2>
+          	<h1>Libra Imprss</h1>
+
+      </div>
+      <br>
+      <div id="content">
+       <div class="content_top">
+                <h1>What is Libra Imprss?</h1>
+       </div>
+
+      <div class="content_instance3">
+       <div class="content_right">
+                <h2>Impressive presentation</h2>
+                  <p>
+                    In Imprss, creating and editing slides is very versatile thanks to different editing and view modes:
+                    Normal (for general editing), Outline (for organizing and outlining your text content), Notes (for viewing and editing the notes attached to a slide),
+                    Handout (for producing paper-based material), and Slide Sorter (for a thumbnail sheet view that lets you quickly locate and order your slides).
+                  </p>
+       </div>
+      </div>
+      <div class="content_instance3">
+       <div class="content_right">
+                  <h2>Contents to enrich</h2>
+                  <p>
+                    Imprss has a comprehensive range of easy-to-use drawing and diagramming tools to add style and sophistication to your presentation.
+                    What's more, you can bring your presentation to life with slide show animations and effects. The Fontworks tool lets you create attractive 2D and 3D images from text.
+                    Imprss enables you to build and control 3D scenes incorporating a large variety of objects and components.
+                  </p>
+       </div>
+      </div>
+      <div class="content_instance3">
+       <div class="content_right">
+                  <h2>Clear overview</h2>
+                  <p>
+                    When the time comes to present your work, a powerful Slide Show mode gives you total command over how your slides are displayed and sequenced,
+                    so that you can focus on addressing your audience (which slides get shown; manual or timed slide transition; pointer visible or invisible;
+                    navigator visible/invisible; and much more).
+                  </p>
+       </div>
+      </div>
+      <br>
+      <div id="rating">
+
+              <h2>
+                <br>
+                User rating of LibraOffice Tool: Libra Imprss
+              </h2>
+              <br>
+              <div id="star_rating">
+              </div>
+              <br />
+              <br />
+              <!-- second continer element for the first star rating system-->
+              <div id="star_rating2">
+              </div>
+      </div>
+
+  <!-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww -->
+  <div id="content">
+
+
+    <br>
+    <div class="content_instance_big">
+                <h2>Founder</h2>
+                <p>
+                  Aditya Fadhillah - Marcus Dige - Stina Hansen <br> <br>
+                </p>
+    </div>
+</div>
+
+</body>
+</html>
